@@ -5,6 +5,8 @@
  */
 
 const mongoose = require("mongoose");
+const jwt = require("jsonwebtoken");
+const config = require("config");
 const Joi = require("joi");
 
 const helpers = require("../lib/helpers");
@@ -28,6 +30,20 @@ const customerSchema = new mongoose.Schema({
   },
   password: { type: String, required: true },
 });
+
+// embedding user data & generating jwt
+customerSchema.methods.genAuthToken = function (secret = "", expiresIn = "") {
+  const payload = {
+    id: this._id,
+    email: this.email,
+  };
+
+  
+  return jwt.sign(payload, secret || config.get("jwtPrivateKey"), {
+    expiresIn,
+  });
+
+};
 
 const Customer = mongoose.model("customer", customerSchema);
 

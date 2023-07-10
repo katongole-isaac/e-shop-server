@@ -1,0 +1,1 @@
+        ether 0a:f3:87:ca:de:0a  txqueuelen 1000  (Ethernet)

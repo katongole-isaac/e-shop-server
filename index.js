@@ -16,6 +16,7 @@ const customerAuthRouter = require('./routes/auth/customer');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+
 // mounting middlewares
 app.use(express.json());
 app.use(bodyParser.urlencoded({extended: true }));
@@ -25,12 +26,19 @@ app.use((req, res, next) => {
   next();
 });
 
+
+
 app.use("/customers", [customerRouter, customerAuthRouter]);
 
 app.use((err, req, res, next) => {
   console.log(err);
   res.status(500).send({error: err.message})
 });
+
+// template engine
+
+app.set("view engine", "ejs");
+
 
 // connect to DB
 const initDB = async () => {
