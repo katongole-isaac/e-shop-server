@@ -7,6 +7,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require('body-parser');
+const cors = require('cors');
 
 require("express-async-errors");
 
@@ -14,10 +15,11 @@ const customerRouter = require("./routes/customer");
 const customerAuthRouter = require('./routes/auth/customer');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8000;
 
 
 // mounting middlewares
+app.use(cors());
 app.use(express.json());
 app.use(bodyParser.urlencoded({extended: true }));
 
@@ -32,11 +34,10 @@ app.use("/customers", [customerRouter, customerAuthRouter]);
 
 app.use((err, req, res, next) => {
   console.log(err);
-  res.status(500).send({error: err.message})
+  res.status(500).send({error: err.message});
 });
 
 // template engine
-
 app.set("view engine", "ejs");
 
 

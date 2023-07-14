@@ -56,7 +56,7 @@ function validateCustomer(customer) {
   const passwordRegExp = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
 
   const schema = Joi.object({
-    fullname: Joi.string().min(5).max(255).required(),
+    fullname: Joi.string().min(3).max(255).required(),
     password: Joi.string().regex(passwordRegExp).required(),
     email: Joi.string().email().required(),
     phone: Joi.string().regex(emailRegExp),
