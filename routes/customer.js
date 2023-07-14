@@ -22,10 +22,18 @@ router.post("/create", async (req, res) => {
 
   const customerFound = await Customer.findOne({ email: data.email });
 
-  if (customerFound)
+  const customerPhoneFound = await Customer.findOne({phone: data.phone});
+
+   if (customerFound)
+     return res
+       .status(400)
+       .send({ error: "Customer with this email already exists" });
+
+  if (customerPhoneFound)
     return res
       .status(400)
-      .send({ error: "Customer with this email already exists" });
+      .send({ error: "There exists a customer with this phone number" });
+ 
 
   const hashedPassword = await helpers.hashPassword(data.password);
   if (!hashedPassword)
@@ -37,18 +45,13 @@ router.post("/create", async (req, res) => {
     fullname: data.fullname,
     email: data.email,
     password: hashedPassword,
-    phone: data?.phone ? data.phone : null,
+    phone: data.phone,
   });
 
   await _customer.save();
 
   const customerResponse = {
-    ..._.pick(_customer, [
-      "fullname",
-      "email",
-      "_id",
-      _customer.phone ? "phhone" : "",
-    ]),
+    ..._.pick(_customer, ["fullname", "email", "_id", "phone"]),
   };
 
   res.send(customerResponse);

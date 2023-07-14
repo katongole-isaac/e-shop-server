@@ -17,7 +17,26 @@ const helpers = require("../../lib/helpers");
 const { Customer, validateCustomerLogins } = require("../../models/cutomer");
 
 
-router.post("/login", async (req, res) => {
+// check whether the customer email exists.
+// This is used on login / signin 
+router.post("/checkemail", async (req, res) => {
+
+ const email = helpers.validateEmail(req.body.email);
+
+ if (!email) return res.status(400).send({ error: "Please provide a valid", checked: false });
+
+  const customer = await Customer.findOne({ email });
+
+  if (!customer)
+    return res
+      .status(404)
+      .send({ error: "Couldn't find customer with this email",checked: false });
+
+  res.send({ error: null, checked: true });
+
+});
+
+router.post("/signin", async (req, res) => {
   const { errors, data } = validateCustomerLogins(req.body);
   if (!_.isEmpty(errors)) return res.status(400).send(errors);
 

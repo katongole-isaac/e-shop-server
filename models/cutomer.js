@@ -27,6 +27,7 @@ const customerSchema = new mongoose.Schema({
       validator: helpers.validatePhone,
       message: "User phone is invalid",
     },
+    required: true,
   },
   password: { type: String, required: true },
 });
@@ -51,7 +52,7 @@ module.exports = { Customer, validateCustomer, validateCustomerLogins };
 
 //this is used in routes
 function validateCustomer(customer) {
-  const emailRegExp = /^(\+\d{1,2}\s?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/;
+  const phoneRegexp = /^(\+\d{1,2}\s?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/;
 
   const passwordRegExp = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
 
@@ -59,7 +60,7 @@ function validateCustomer(customer) {
     fullname: Joi.string().min(3).max(255).required(),
     password: Joi.string().regex(passwordRegExp).required(),
     email: Joi.string().email().required(),
-    phone: Joi.string().regex(emailRegExp),
+    phone: Joi.string().regex(phoneRegexp).required(),
   });
 
   return helpers.validateReq(customer, schema);
@@ -73,3 +74,4 @@ function validateCustomerLogins(customer) {
 
   return helpers.validateReq(customer, schema);
 }
+
