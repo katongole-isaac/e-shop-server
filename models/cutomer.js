@@ -33,17 +33,18 @@ const customerSchema = new mongoose.Schema({
 });
 
 // embedding user data & generating jwt
-customerSchema.methods.genAuthToken = function (secret = "", expiresIn = "") {
+customerSchema.methods.genAuthToken = function (
+  secret = "",
+  expiresIn = "14 days"
+) {
   const payload = {
     id: this._id,
     email: this.email,
   };
 
-  
   return jwt.sign(payload, secret || config.get("jwtPrivateKey"), {
     expiresIn,
   });
-
 };
 
 const Customer = mongoose.model("customer", customerSchema);
@@ -54,7 +55,10 @@ module.exports = { Customer, validateCustomer, validateCustomerLogins };
 function validateCustomer(customer) {
   const phoneRegexp = /^(\+\d{1,2}\s?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/;
 
-  const passwordRegExp = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
+  // match a str with atleast a digit or 
+  // special char
+  const passwordRegExp =
+    /^(?=.*?[A-Za-z])(?=.*?[0-9~!#=$%?/@+^&_\-\*\.\\\{\}\(\)\[\]]).{6,}$/;
 
   const schema = Joi.object({
     fullname: Joi.string().min(3).max(255).required(),
